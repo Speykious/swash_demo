@@ -124,7 +124,7 @@ impl Selection {
     /// Returns the current source offset for the anchor of the selection.
     pub fn anchor_offset(&self, layout: &Paragraph) -> usize {
         self.anchor.text_offset(layout)
-    }    
+    }
 
     /// Returns the source range for the currently selected text. Note that
     /// the ordering of this range is dependent on the direction in which
@@ -145,7 +145,7 @@ impl Selection {
             core::mem::swap(&mut start, &mut end);
         }
         start..end
-    }    
+    }
 
     /// Returns the range of text that should be erased based on the
     /// current selection. This operation implements the action of the
@@ -154,7 +154,10 @@ impl Selection {
         if !self.is_collapsed() {
             return Some(Erase::Full(self.normalized_range(layout)));
         }
-        let cluster = layout.data.clusters.get(self.focus.logical_index(layout) as usize)?;
+        let cluster = layout
+            .data
+            .clusters
+            .get(self.focus.logical_index(layout) as usize)?;
         let start = cluster.offset as usize;
         let end = start + cluster.len as usize;
         Some(Erase::Full(start..end))
@@ -170,7 +173,7 @@ impl Selection {
         let logical_index = self.focus.logical_index(layout) as usize;
         if logical_index == 0 {
             return None;
-        }        
+        }
         let prev_logical = logical_index - 1;
         let cluster = layout.data.clusters.get(prev_logical)?;
         let start = cluster.offset as usize;
@@ -380,12 +383,12 @@ impl Selection {
     }
 
     fn extend_word(&self, layout: &Paragraph, other: Selection) -> Self {
-        let fudge = if self.anchor.after {
-            -0.01
-        } else {
-            0.01
-        };
-        let initial_word = Self::word_from_point(layout, self.anchor.edge + fudge, layout.line_data.lines[self.anchor.line as usize].baseline - 0.001);
+        let fudge = if self.anchor.after { -0.01 } else { 0.01 };
+        let initial_word = Self::word_from_point(
+            layout,
+            self.anchor.edge + fudge,
+            layout.line_data.lines[self.anchor.line as usize].baseline - 0.001,
+        );
         let mut anchor = initial_word.anchor;
         let mut focus = other.focus;
         if anchor > focus {
@@ -418,9 +421,9 @@ impl Selection {
             focus,
             move_state: None,
         }
-    }     
+    }
 
-    fn extend_full(&self, layout: &Paragraph, other: Selection) -> Self {                
+    fn extend_full(&self, layout: &Paragraph, other: Selection) -> Self {
         let mut anchor = self.anchor;
         let mut focus = other.focus;
         if anchor > focus {
@@ -453,7 +456,7 @@ impl Selection {
             focus,
             move_state: None,
         }
-    }    
+    }
 
     fn collapse(&self, layout: &Paragraph, prev: bool) -> Self {
         let node = if prev {
@@ -600,7 +603,7 @@ impl Node {
         } else {
             this.edge = line.offset() + line.advance();
         }
-        this.after = after;// && !this.nl;
+        this.after = after; // && !this.nl;
         this
     }
 

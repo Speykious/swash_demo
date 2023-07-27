@@ -20,7 +20,7 @@ impl BufferKind {
         match self {
             Self::Array => gl::ARRAY_BUFFER,
             Self::Element => gl::ELEMENT_ARRAY_BUFFER,
-            Self::Uniform => gl::UNIFORM_BUFFER,            
+            Self::Uniform => gl::UNIFORM_BUFFER,
         }
     }
 }
@@ -53,11 +53,16 @@ impl Buffer {
         unsafe {
             gl::BindBuffer(ty, self.id);
             if size > self.capacity {
-                gl::BufferData(ty, size as isize, data.as_ptr() as *const _, gl::DYNAMIC_DRAW);
+                gl::BufferData(
+                    ty,
+                    size as isize,
+                    data.as_ptr() as *const _,
+                    gl::DYNAMIC_DRAW,
+                );
                 self.capacity = size;
             } else {
                 gl::BufferSubData(ty, 0, size as isize, data.as_ptr() as *const _);
-            }    
+            }
         }
     }
 
@@ -75,10 +80,10 @@ impl Buffer {
     }
 
     pub fn bind(&self) {
-        unsafe { 
+        unsafe {
             gl::BindBuffer(self.kind.to_gl(), self.id);
         }
-    }    
+    }
 }
 
 impl Drop for Buffer {
@@ -131,7 +136,17 @@ impl Texture {
     pub fn update<T: Copy>(&self, data: &[T]) {
         unsafe {
             gl::BindTexture(gl::TEXTURE_2D, self.id);
-            gl::TexSubImage2D(gl::TEXTURE_2D, 0, 0, 0, self.width as i32, self.height as i32, gl::RGBA, gl::UNSIGNED_BYTE, data.as_ptr() as *const _);
+            gl::TexSubImage2D(
+                gl::TEXTURE_2D,
+                0,
+                0,
+                0,
+                self.width as i32,
+                self.height as i32,
+                gl::RGBA,
+                gl::UNSIGNED_BYTE,
+                data.as_ptr() as *const _,
+            );
             // gl::TexImage2D(
             //     gl::TEXTURE_2D,
             //     0,
@@ -171,12 +186,7 @@ pub struct Shader {
 unsafe fn compile_shader(kind: GLenum, source: &str) -> GLuint {
     let src = CString::new(source).unwrap();
     let s = gl::CreateShader(kind);
-    gl::ShaderSource(
-        s,
-        1,
-        [src.as_ptr() as *const _].as_ptr(),
-        std::ptr::null(),
-    );
+    gl::ShaderSource(s, 1, [src.as_ptr() as *const _].as_ptr(), std::ptr::null());
     gl::CompileShader(s);
     let mut status = 0;
     gl::GetShaderiv(s, gl::COMPILE_STATUS, &mut status);
@@ -247,4 +257,3 @@ impl Drop for Shader {
         }
     }
 }
-

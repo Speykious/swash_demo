@@ -1,5 +1,5 @@
-use swash::{FontRef, GlyphId, NormalizedCoord};
 use super::Color;
+use swash::{FontRef, GlyphId, NormalizedCoord};
 
 /// Properties for a text run.
 #[derive(Copy, Clone)]
@@ -41,4 +41,3 @@ pub struct Glyph {
     /// Y offset of the glyph.
     pub y: f32,
 }
-

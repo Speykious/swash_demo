@@ -1,5 +1,5 @@
-use super::layout_data::*;
 use super::layout::*;
+use super::layout_data::*;
 
 /// Alignment of a paragraph.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
@@ -27,7 +27,7 @@ pub struct BreakLines<'a> {
 impl<'a> BreakLines<'a> {
     pub(super) fn new(layout: &'a mut LayoutData, lines: &'a mut LineLayoutData) -> Self {
         Self {
-            layout, 
+            layout,
             lines,
             state: BreakerState::default(),
             prev_state: None,
@@ -53,7 +53,14 @@ impl<'a> BreakLines<'a> {
                             self.state.line.clusters.1 = self.state.j as u32;
                             self.state.line.runs.1 = self.state.i as u32 + 1;
                             self.state.line.skip_mandatory_break = true;
-                            if commit_line(self.layout, self.lines, &mut self.state.line, max_advance, alignment, true) {
+                            if commit_line(
+                                self.layout,
+                                self.lines,
+                                &mut self.state.line,
+                                max_advance,
+                                alignment,
+                                true,
+                            ) {
                                 self.state.runs = self.lines.runs.len();
                                 self.state.lines = self.lines.lines.len();
                                 self.state.line.x = 0.;
@@ -80,7 +87,14 @@ impl<'a> BreakLines<'a> {
                         self.state.line.runs.1 = self.state.i as u32 + 1;
                         self.state.line.clusters.1 = self.state.j as u32 + 1;
                         self.state.line.x = next_x;
-                        if commit_line(self.layout, self.lines, &mut self.state.line, max_advance, alignment, false) {
+                        if commit_line(
+                            self.layout,
+                            self.lines,
+                            &mut self.state.line,
+                            max_advance,
+                            alignment,
+                            false,
+                        ) {
                             self.state.runs = self.lines.runs.len();
                             self.state.lines = self.lines.lines.len();
                             self.state.line.x = 0.;
@@ -96,7 +110,14 @@ impl<'a> BreakLines<'a> {
                             self.state.line.clusters.1 = self.state.j as u32 + 1;
                             self.state.line.x = next_x;
                             self.state.j += 1;
-                            if commit_line(self.layout, self.lines, &mut self.state.line, max_advance, alignment, false) {
+                            if commit_line(
+                                self.layout,
+                                self.lines,
+                                &mut self.state.line,
+                                max_advance,
+                                alignment,
+                                false,
+                            ) {
                                 self.state.runs = self.lines.runs.len();
                                 self.state.lines = self.lines.lines.len();
                                 self.state.line.x = 0.;
@@ -107,7 +128,14 @@ impl<'a> BreakLines<'a> {
                             }
                         } else {
                             self.state.line = prev.state;
-                            if commit_line(self.layout, self.lines, &mut self.state.line, max_advance, alignment, false) {
+                            if commit_line(
+                                self.layout,
+                                self.lines,
+                                &mut self.state.line,
+                                max_advance,
+                                alignment,
+                                false,
+                            ) {
                                 self.state.runs = self.lines.runs.len();
                                 self.state.lines = self.lines.lines.len();
                                 self.state.line.x = 0.;
@@ -127,7 +155,14 @@ impl<'a> BreakLines<'a> {
                             self.state.line.x = next_x;
                             self.state.j += 1;
                         }
-                        if commit_line(self.layout, self.lines, &mut self.state.line, max_advance, alignment, false) {
+                        if commit_line(
+                            self.layout,
+                            self.lines,
+                            &mut self.state.line,
+                            max_advance,
+                            alignment,
+                            false,
+                        ) {
                             self.state.runs = self.lines.runs.len();
                             self.state.lines = self.lines.lines.len();
                             self.state.line.x = 0.;
@@ -147,7 +182,14 @@ impl<'a> BreakLines<'a> {
             }
             self.state.i += 1;
         }
-        if commit_line(self.layout, self.lines, &mut self.state.line, max_advance, alignment, true) {
+        if commit_line(
+            self.layout,
+            self.lines,
+            &mut self.state.line,
+            max_advance,
+            alignment,
+            true,
+        ) {
             self.state.runs = self.lines.runs.len();
             self.state.lines = self.lines.lines.len();
             self.state.line.x = 0.;
@@ -277,19 +319,21 @@ impl<'a> BreakLines<'a> {
                     self.lines.clusters.push((index, total_advance));
                     total_advance += cluster.advance();
                 }
-            }   
+            }
             if line.alignment != Alignment::Start {
-                let trailing_space_advance = if line.clusters.0 != line.clusters.1 && line.clusters.1 > 0 {
-                    let (cluster_index, cluster_offset) = self.lines.clusters[line.clusters.1 as usize - 1];
-                    let cluster_data = self.layout.clusters[cluster_index as usize];
-                    if cluster_data.info.whitespace().is_space_or_nbsp() {
-                        total_advance - cluster_offset
+                let trailing_space_advance =
+                    if line.clusters.0 != line.clusters.1 && line.clusters.1 > 0 {
+                        let (cluster_index, cluster_offset) =
+                            self.lines.clusters[line.clusters.1 as usize - 1];
+                        let cluster_data = self.layout.clusters[cluster_index as usize];
+                        if cluster_data.info.whitespace().is_space_or_nbsp() {
+                            total_advance - cluster_offset
+                        } else {
+                            0.
+                        }
                     } else {
                         0.
-                    }
-                } else {
-                    0.
-                };
+                    };
                 let extra = line.max_advance - total_advance + trailing_space_advance;
                 if extra > 0. {
                     let offset = if line.alignment == Alignment::Middle {
@@ -302,7 +346,7 @@ impl<'a> BreakLines<'a> {
                     }
                     line.x = offset;
                 }
-            }         
+            }
             if line.explicit_break {
                 // self.lines.clusters.get_mut(line.clusters.1.saturating_sub(1) as usize).map(|c| c.flags |= CLUSTER_NEWLINE);
             }

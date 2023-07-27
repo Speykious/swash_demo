@@ -7,9 +7,9 @@ pub mod text;
 mod batch;
 mod image_cache;
 
-pub use batch::{Command, DisplayList, Rect, Vertex, Pipeline};
+pub use batch::{Command, DisplayList, Pipeline, Rect, Vertex};
 pub use image_cache::{
-    Epoch, AddImage, ImageData, ImageId, ImageLocation, TextureEvent, TextureId,
+    AddImage, Epoch, ImageData, ImageId, ImageLocation, TextureEvent, TextureId,
 };
 
 use batch::BatchManager;
@@ -94,17 +94,25 @@ impl Compositor {
     }
 
     /// Draws a text run.
-    pub fn draw_glyphs<I>(&mut self, rect: impl Into<Rect>, depth: f32, style: &TextRunStyle, glyphs: I)
-    where
+    pub fn draw_glyphs<I>(
+        &mut self,
+        rect: impl Into<Rect>,
+        depth: f32,
+        style: &TextRunStyle,
+        glyphs: I,
+    ) where
         I: Iterator,
         I::Item: Borrow<Glyph>,
     {
         let rect = rect.into();
         let (underline, underline_offset, underline_size, underline_color) = match style.underline {
-            Some(underline) => {
-                (true, underline.offset.round() as i32, underline.size.round().max(1.), underline.color)
-            }
-            _ => (false, 0, 0., Color::default())
+            Some(underline) => (
+                true,
+                underline.offset.round() as i32,
+                underline.size.round().max(1.),
+                underline.color,
+            ),
+            _ => (false, 0, 0., Color::default()),
         };
         if underline {
             self.intercepts.clear();
@@ -115,11 +123,11 @@ impl Compositor {
             style.font,
             style.font_coords,
             style.font_size,
-        );        
-        let subpx_bias = (0.125, 0.);    
-        let color = style.color;    
+        );
+        let subpx_bias = (0.125, 0.);
+        let color = style.color;
         let x = rect.x;
-        for g in glyphs {           
+        for g in glyphs {
             let glyph = g.borrow();
             let entry = session.get(glyph.id, glyph.x, glyph.y);
             if let Some(entry) = entry {
@@ -153,7 +161,7 @@ impl Compositor {
                                 self.intercepts.push(desc_ink);
                             }
                         }
-                    }                                
+                    }
                 }
             }
         }
@@ -166,15 +174,22 @@ impl Compositor {
             let uy = style.baseline - underline_offset as f32;
             for range in self.intercepts.iter() {
                 if ux < range.0 {
-                    self.batches.add_rect(&Rect::new(ux, uy, range.0 - ux, underline_size as f32), depth, underline_color);
+                    self.batches.add_rect(
+                        &Rect::new(ux, uy, range.0 - ux, underline_size as f32),
+                        depth,
+                        underline_color,
+                    );
                 }
                 ux = range.1;
             }
             let end = x + rect.width;
             if ux < end {
-                self.draw_rect(Rect::new(ux, uy, end - ux, underline_size), depth, underline_color);
+                self.draw_rect(
+                    Rect::new(ux, uy, end - ux, underline_size),
+                    depth,
+                    underline_color,
+                );
             }
-        }        
+        }
     }
 }
-

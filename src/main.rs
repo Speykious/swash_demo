@@ -11,11 +11,11 @@ use glutin::context::{ContextApi, ContextAttributesBuilder, Version};
 use glutin::display::GetGlDisplay;
 use glutin::prelude::{GlConfig, GlDisplay, NotCurrentGlContextSurfaceAccessor};
 use glutin::surface::{GlSurface, SurfaceAttributesBuilder};
+use glutin_winit::ApiPrefence;
+use raw_window_handle::HasRawWindowHandle;
 use winit::event::{Event, ModifiersState, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::WindowBuilder;
-use glutin_winit::ApiPrefence;
-use raw_window_handle::HasRawWindowHandle;
 
 use comp::*;
 use comp::{color, color::Color};

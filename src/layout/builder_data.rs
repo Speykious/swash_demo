@@ -5,7 +5,7 @@ use super::{
 };
 use core::borrow::Borrow;
 use swash::text::{cluster::CharInfo, Script};
-use swash::{Stretch, Style, Setting, Weight};
+use swash::{Setting, Stretch, Style, Weight};
 
 /// Data that describes a fragment.
 #[derive(Copy, Clone)]
@@ -266,9 +266,7 @@ impl BuilderState {
                 S::UnderlineOffset(offset) => {
                     span.underline_offset = (*offset).map(|o| o * scale);
                 }
-                S::UnderlineSize(size) => {
-                    span.underline_size = (*size).map(|s| s * scale)
-                }
+                S::UnderlineSize(size) => span.underline_size = (*size).map(|s| s * scale),
                 S::TextTransform(xform) => {
                     span.text_transform = *xform;
                 }

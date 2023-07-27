@@ -1,5 +1,5 @@
-use crate::util::{atomic::AtomicCounter, string::SmallString};
 use super::types::{FamilyKey, GenericFamily};
+use crate::util::{atomic::AtomicCounter, string::SmallString};
 
 /// Ordered sequence of family names for font selection.
 #[derive(Clone, Debug)]

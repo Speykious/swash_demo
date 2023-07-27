@@ -1,6 +1,6 @@
+use crate::layout::*;
 use core::borrow::Borrow;
 use core::ops::Range;
-use crate::layout::*;
 
 #[derive(Clone, Default)]
 pub struct Document {

@@ -1,4 +1,4 @@
-use super::{gl, Buffer, BufferKind, Texture, Shader};
+use super::{gl, Buffer, BufferKind, Shader, Texture};
 use crate::comp::*;
 use std::collections::HashMap;
 
@@ -23,18 +23,30 @@ impl Device {
 
     fn handle_texture_event(&mut self, event: &TextureEvent) {
         match event {
-            TextureEvent::CreateTexture { id, format, width, height, data } => {
+            TextureEvent::CreateTexture {
+                id,
+                format,
+                width,
+                height,
+                data,
+            } => {
                 let tex = Texture::new(*width as u32, *height as u32);
                 if let Some(data) = data {
                     tex.update(data);
                 }
                 self.textures.insert(*id, tex);
             }
-            TextureEvent::UpdateTexture { id, x, y, width, height, data } => {
+            TextureEvent::UpdateTexture {
+                id,
+                x,
+                y,
+                width,
+                height,
+                data,
+            } => {
                 if let Some(tex) = self.textures.get(&id) {
                     tex.update(data);
                 }
-
             }
             TextureEvent::DestroyTexture(id) => {
                 self.textures.remove(id);
@@ -42,7 +54,11 @@ impl Device {
         }
     }
 
-    pub fn finish_composition(&mut self, compositor: &mut Compositor, display_list: &mut DisplayList) {
+    pub fn finish_composition(
+        &mut self,
+        compositor: &mut Compositor,
+        display_list: &mut DisplayList,
+    ) {
         compositor.finish(display_list, |e| self.handle_texture_event(&e));
     }
 
@@ -54,63 +70,58 @@ impl Device {
         self.indices.bind();
         for command in list.commands() {
             match command {
-                Command::BindPipeline(pipeline) => {
-                    match pipeline {
-                        Pipeline::Opaque => {
-                            unsafe {
-                                gl::DepthMask(1);
-                                gl::Disable(gl::BLEND);
-                                gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
-                                gl::BlendEquation(gl::FUNC_ADD);
-                            }
-                            self.base_shader.activate();
-                            self.base_shader.bind_attribs();
-                            self.base_shader.set_view_proj(&view_proj);
+                Command::BindPipeline(pipeline) => match pipeline {
+                    Pipeline::Opaque => {
+                        unsafe {
+                            gl::DepthMask(1);
+                            gl::Disable(gl::BLEND);
+                            gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
+                            gl::BlendEquation(gl::FUNC_ADD);
                         }
-                        Pipeline::Transparent => {
-                            unsafe {
-                                gl::DepthMask(0);
-                                gl::Enable(gl::BLEND);
-                                gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
-                            }
-                            self.base_shader.activate();
-                            self.base_shader.bind_attribs();   
-                            self.base_shader.set_view_proj(&view_proj);                         
-                        }
-                        Pipeline::Subpixel => {
-                            unsafe {
-                                gl::DepthMask(0);
-                                gl::Enable(gl::BLEND);
-                                gl::BlendFunc(gl::SRC1_COLOR, gl::ONE_MINUS_SRC1_COLOR);
-                            }
-                            self.subpx_shader.activate();
-                            self.subpx_shader.bind_attribs();   
-                            self.subpx_shader.set_view_proj(&view_proj);                         
-                        }                        
-
+                        self.base_shader.activate();
+                        self.base_shader.bind_attribs();
+                        self.base_shader.set_view_proj(&view_proj);
                     }
-                }
+                    Pipeline::Transparent => {
+                        unsafe {
+                            gl::DepthMask(0);
+                            gl::Enable(gl::BLEND);
+                            gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
+                        }
+                        self.base_shader.activate();
+                        self.base_shader.bind_attribs();
+                        self.base_shader.set_view_proj(&view_proj);
+                    }
+                    Pipeline::Subpixel => {
+                        unsafe {
+                            gl::DepthMask(0);
+                            gl::Enable(gl::BLEND);
+                            gl::BlendFunc(gl::SRC1_COLOR, gl::ONE_MINUS_SRC1_COLOR);
+                        }
+                        self.subpx_shader.activate();
+                        self.subpx_shader.bind_attribs();
+                        self.subpx_shader.set_view_proj(&view_proj);
+                    }
+                },
                 Command::BindTexture(unit, id) => {
                     if let Some(tex) = self.textures.get(&id) {
                         tex.bind(*unit);
                     }
                 }
-                Command::Draw { start, count } => {
-                    unsafe {
-                        gl::DrawElements(
-                            gl::TRIANGLES,
-                            *count as _,
-                            gl::UNSIGNED_INT,
-                            (*start as usize * 4) as *const _,
-                        );                          
-                    }
-                }
+                Command::Draw { start, count } => unsafe {
+                    gl::DrawElements(
+                        gl::TRIANGLES,
+                        *count as _,
+                        gl::UNSIGNED_INT,
+                        (*start as usize * 4) as *const _,
+                    );
+                },
             }
         }
         unsafe {
             gl::DepthMask(1);
             gl::Disable(gl::BLEND);
-        }        
+        }
     }
 }
 
@@ -161,14 +172,7 @@ impl BatchShader {
 
     pub fn bind_attribs(&self) {
         unsafe {
-            gl::VertexAttribPointer(
-                self.v_pos as _,
-                4,
-                gl::FLOAT,
-                0,
-                28,
-                core::ptr::null(),
-            );
+            gl::VertexAttribPointer(self.v_pos as _, 4, gl::FLOAT, 0, 28, core::ptr::null());
             gl::VertexAttribPointer(
                 self.v_color as _,
                 4,
@@ -177,14 +181,7 @@ impl BatchShader {
                 28,
                 16usize as *const _,
             );
-            gl::VertexAttribPointer(
-                self.v_uv as _,
-                2,
-                gl::FLOAT,
-                0,
-                28,
-                20usize as *const _,
-            );
+            gl::VertexAttribPointer(self.v_uv as _, 2, gl::FLOAT, 0, 28, 20usize as *const _);
             gl::EnableVertexAttribArray(self.v_pos as _);
             gl::EnableVertexAttribArray(self.v_color as _);
             gl::EnableVertexAttribArray(self.v_uv as _);

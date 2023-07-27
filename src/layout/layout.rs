@@ -45,7 +45,14 @@ impl Paragraph {
 }
 
 impl Paragraph {
-    pub(super) fn push_run<'a>(&mut self, spans: &[SpanData], font: Font, size: f32, level: u8, shaper: Shaper<'a>) {
+    pub(super) fn push_run<'a>(
+        &mut self,
+        spans: &[SpanData],
+        font: Font,
+        size: f32,
+        level: u8,
+        shaper: Shaper<'a>,
+    ) {
         let coords_start = self.data.coords.len() as u32;
         self.data
             .coords
@@ -83,7 +90,9 @@ impl Paragraph {
                         descent: metrics.descent * span_data.line_spacing,
                         leading: metrics.leading * span_data.line_spacing,
                         underline: span_data.underline,
-                        underline_offset: span_data.underline_offset.unwrap_or(metrics.underline_offset),
+                        underline_offset: span_data
+                            .underline_offset
+                            .unwrap_or(metrics.underline_offset),
                         underline_size: span_data.underline_size.unwrap_or(metrics.stroke_size),
                         strikeout_offset: metrics.strikeout_offset,
                         strikeout_size: metrics.stroke_size,
@@ -174,7 +183,9 @@ impl Paragraph {
             descent: metrics.descent * span_data.line_spacing,
             leading: metrics.leading * span_data.line_spacing,
             underline: span_data.underline,
-            underline_offset: span_data.underline_offset.unwrap_or(metrics.underline_offset),
+            underline_offset: span_data
+                .underline_offset
+                .unwrap_or(metrics.underline_offset),
             underline_size: span_data.underline_size.unwrap_or(metrics.stroke_size),
             strikeout_offset: metrics.strikeout_offset,
             strikeout_size: metrics.stroke_size,

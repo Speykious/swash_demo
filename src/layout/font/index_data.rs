@@ -8,7 +8,7 @@ use crate::util::string::SmallString;
 use std::path::PathBuf;
 use std::sync::RwLock;
 use std::time::SystemTime;
-use swash::{CacheKey, Attributes, Stretch, Style, Weight};
+use swash::{Attributes, CacheKey, Stretch, Style, Weight};
 
 #[derive(Clone)]
 pub struct FamilyData {

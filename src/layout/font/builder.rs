@@ -3,14 +3,14 @@ use super::index_data::*;
 use super::library::FontLibrary;
 use super::system::{Os, OS};
 use super::types::*;
-use crate::util::{string::SmallString};
+use crate::util::string::SmallString;
 use std::{
     fs,
     path::{Path, PathBuf},
     sync::RwLock,
     time::SystemTime,
 };
-use swash::{CacheKey, Attributes, FontDataRef, FontRef, Stretch, StringId, Style, Weight};
+use swash::{Attributes, CacheKey, FontDataRef, FontRef, Stretch, StringId, Style, Weight};
 
 /// Hint for specifying whether font files should be memory mapped.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
