@@ -629,8 +629,15 @@ fn build_document() -> doc::Document {
     db.enter_span(&[S::LineSpacing(1.)]);
     db.add_text(" Furthermore, العربية نص جميل. द क्विक ब्राउन फ़ॉक्स jumps over the lazy 🐕.\n\n");
     db.leave_span();
+    db.enter_span(&[
+        S::family_list("Roboto, sand-serif"),
+        S::Size(6.),
+        S::LineSpacing(1.),
+    ]);
+    db.add_text(LOREM_IPSUM);
+    db.leave_span();
     db.enter_span(&[S::family_list("verdana, sans-serif"), S::LineSpacing(1.)]);
-    db.add_text("A true ");
+    db.add_text("\n\nA true ");
     db.enter_span(&[S::Size(48.)]);
     db.add_text("🕵🏽‍♀️");
     db.leave_span();
@@ -642,3 +649,13 @@ fn build_document() -> doc::Document {
 }
 
 const WIKI_TYPOGRAPHY_REST: &'static str = " when displayed. The arrangement of type involves selecting typefaces, point sizes, line lengths, line-spacing (leading), and letter-spacing (tracking), and adjusting the space between pairs of letters (kerning). The term typography is also applied to the style, arrangement, and appearance of the letters, numbers, and symbols created by the process.";
+
+const LOREM_IPSUM: &str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Enim tortor at auctor urna nunc id. Ornare aenean euismod elementum nisi. Aliquam id diam maecenas ultricies mi eget mauris pharetra et. Purus sit amet volutpat consequat mauris nunc congue. Urna molestie at elementum eu facilisis sed. Habitant morbi tristique senectus et. Erat pellentesque adipiscing commodo elit. Placerat duis ultricies lacus sed turpis tincidunt id aliquet. Pharetra pharetra massa massa ultricies mi quis hendrerit dolor magna. Sit amet consectetur adipiscing elit. Nibh mauris cursus mattis molestie. Nec feugiat in fermentum posuere. Volutpat blandit aliquam etiam erat. Aliquet nibh praesent tristique magna sit amet purus gravida. Cras tincidunt lobortis feugiat vivamus at augue eget arcu. Non sodales neque sodales ut etiam. In hac habitasse platea dictumst vestibulum. Cras fermentum odio eu feugiat pretium nibh ipsum.
+
+Sagittis aliquam malesuada bibendum arcu vitae elementum. Id aliquet lectus proin nibh nisl. Fusce ut placerat orci nulla pellentesque dignissim enim sit. Blandit volutpat maecenas volutpat blandit aliquam etiam erat velit. Enim praesent elementum facilisis leo vel. Dictum sit amet justo donec enim diam vulputate. Risus in hendrerit gravida rutrum quisque. Feugiat scelerisque varius morbi enim nunc faucibus a pellentesque. Senectus et netus et malesuada fames ac turpis egestas. Sit amet risus nullam eget felis eget nunc lobortis. Lectus quam id leo in vitae turpis massa sed elementum.
+
+Rhoncus dolor purus non enim. Sed vulputate odio ut enim blandit. Diam sit amet nisl suscipit adipiscing. Cursus vitae congue mauris rhoncus. Porta lorem mollis aliquam ut porttitor leo a diam. Netus et malesuada fames ac turpis egestas sed. Purus in mollis nunc sed. Eget arcu dictum varius duis at consectetur lorem. Aliquam malesuada bibendum arcu vitae elementum curabitur. Ut porttitor leo a diam sollicitudin.
+
+Rhoncus aenean vel elit scelerisque mauris pellentesque pulvinar. Pulvinar neque laoreet suspendisse interdum consectetur libero id faucibus. Adipiscing tristique risus nec feugiat. Tortor aliquam nulla facilisi cras fermentum odio. Proin libero nunc consequat interdum varius sit. Felis imperdiet proin fermentum leo vel orci. Et pharetra pharetra massa massa ultricies mi. Amet commodo nulla facilisi nullam vehicula ipsum a arcu. Pulvinar neque laoreet suspendisse interdum consectetur libero id faucibus. Cursus mattis molestie a iaculis at erat pellentesque adipiscing. Ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis. Libero justo laoreet sit amet cursus sit amet dictum sit. Vestibulum lectus mauris ultrices eros in cursus turpis. In nisl nisi scelerisque eu ultrices vitae auctor eu. Aliquet enim tortor at auctor urna nunc id. Consectetur adipiscing elit ut aliquam purus sit amet luctus venenatis. Dolor sit amet consectetur adipiscing elit ut aliquam purus.
+
+Facilisi cras fermentum odio eu. Nibh sit amet commodo nulla facilisi nullam vehicula ipsum a. Viverra aliquet eget sit amet tellus cras. Sem nulla pharetra diam sit amet nisl suscipit adipiscing. Scelerisque felis imperdiet proin fermentum leo vel orci. Purus faucibus ornare suspendisse sed nisi lacus. Lectus arcu bibendum at varius vel pharetra vel turpis. Sit amet justo donec enim diam vulputate ut pharetra sit. Velit euismod in pellentesque massa placerat duis ultricies lacus. Augue interdum velit euismod in pellentesque. Amet aliquam id diam maecenas. Nascetur ridiculus mus mauris vitae ultricies leo. Risus commodo viverra maecenas accumsan lacus vel. Non enim praesent elementum facilisis leo vel fringilla. Tincidunt eget nullam non nisi est sit amet facilisis. Cursus vitae congue mauris rhoncus aenean.";
