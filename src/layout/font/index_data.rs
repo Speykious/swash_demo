@@ -131,7 +131,7 @@ impl FamilyData {
         if weight >= Weight(400) && weight <= Weight(500) {
             // weights greater than or equal to the target weight are checked
             // in ascending order until 500 is hit and checked
-            for font in self.fonts.iter().filter(|f| {
+            if let Some(font) = self.fonts.iter().find(|f| {
                 f.stretch == matching_stretch
                     && f.style == matching_style
                     && f.weight >= weight
@@ -141,7 +141,7 @@ impl FamilyData {
             }
             // followed by weights less than the target weight in descending
             // order
-            for font in self.fonts.iter().rev().filter(|f| {
+            if let Some(font) = self.fonts.iter().rev().find(|f| {
                 f.stretch == matching_stretch && f.style == matching_style && f.weight < weight
             }) {
                 return Some(font.id);
@@ -161,7 +161,7 @@ impl FamilyData {
         } else if weight < Weight(400) {
             // weights less than or equal to the desired weight are checked in
             // descending order
-            for font in self.fonts.iter().rev().filter(|f| {
+            if let Some(font) = self.fonts.iter().rev().find(|f| {
                 f.stretch == matching_stretch && f.style == matching_style && f.weight <= weight
             }) {
                 return Some(font.id);
@@ -180,7 +180,7 @@ impl FamilyData {
         } else {
             // weights greater than or equal to the desired weight are checked
             // in ascending order
-            for font in self.fonts.iter().filter(|f| {
+            if let Some(font) = self.fonts.iter().find(|f| {
                 f.stretch == matching_stretch && f.style == matching_style && f.weight >= weight
             }) {
                 return Some(font.id);
