@@ -11,12 +11,15 @@ uniform sampler2D tex;
 uniform sampler2D mask;
 
 void main() {
-  vec4 frag = color;
-  if (use_tex > 0.0) {
-    frag *= texture(tex, uv);
-  }
-  if (use_mask > 0.0) {
-    frag.a *= texture(mask, uv).a;
-  }
-  frag_color = frag;
+    vec4 frag = color;
+
+    if (use_tex > 0.0) {
+        frag *= texture(tex, uv);
+    }
+
+    if (use_mask > 0.0) {
+        frag.a *= texture(mask, uv).a;
+    }
+
+    frag_color = frag;
 }
