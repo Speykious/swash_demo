@@ -144,10 +144,11 @@ impl StaticIndex {
                 self.cjk[Cjk::Japanese as usize] =
                     self.find_fallbacks(&["noto sans cjk jp", "hiragino sans w3"]);
                 // Korean
-                self.cjk[Cjk::Korean as usize] = self.find_fallbacks(&["apple sd gothic neo"]);
+                self.cjk[Cjk::Korean as usize] = self.find_fallbacks(&["noto sans cjk kr", "apple sd gothic neo"]);
 
                 self.map_script(Script::Hiragana, &["noto sans cjk jp", "hiragino sans w3"]);
                 self.map_script(Script::Katakana, &["noto sans cjk jp", "hiragino sans w3"]);
+                self.map_script(Script::Hangul, &["noto sans cjk kr", "apple sd gothic neo"]);
 
                 self.map_script(Script::Latin, &["times", "times new roman"]);
                 self.map_script(Script::Arabic, &["geeza pro"]);
@@ -182,6 +183,7 @@ impl StaticIndex {
 
                 self.map_script(Script::Hiragana, &["noto sans cjk jp"]);
                 self.map_script(Script::Katakana, &["noto sans cjk jp"]);
+                self.map_script(Script::Hangul, &["noto sans cjk kr"]);
 
                 self.map_script(
                     Script::Latin,
