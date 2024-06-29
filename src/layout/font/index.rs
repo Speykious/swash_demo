@@ -50,19 +50,17 @@ impl Default for StaticIndex {
 impl StaticIndex {
     pub fn setup_default_fallbacks(&mut self) {
         use super::system::*;
-        use Cjk::*;
-        use Script::*;
         match OS {
             Os::Windows => {
                 // Simplified Chinese
-                self.cjk[Simplified as usize] =
+                self.cjk[Cjk::Simplified as usize] =
                     self.find_fallbacks(&["microsoft yahei", "simsun", "simsun-extb"]);
                 // Traditional Chinese
-                self.cjk[Traditional as usize] =
+                self.cjk[Cjk::Traditional as usize] =
                     self.find_fallbacks(&["microsoft jhenghei", "pmingliu", "pmingliu-extb"]);
-                self.cjk[Cjk::None as usize] = self.cjk[Traditional as usize];
+                self.cjk[Cjk::None as usize] = self.cjk[Cjk::Traditional as usize];
                 // Japanese
-                self.cjk[Japanese as usize] = self.find_fallbacks(&[
+                self.cjk[Cjk::Japanese as usize] = self.find_fallbacks(&[
                     "meiryo",
                     "yu gothic",
                     "microsoft yahei",
@@ -70,39 +68,40 @@ impl StaticIndex {
                     "simsun-extb",
                 ]);
                 // Korean
-                self.cjk[Korean as usize] = self.find_fallbacks(&[
+                self.cjk[Cjk::Korean as usize] = self.find_fallbacks(&[
                     "malgun gothic",
                     "gulim",
                     "microsoft yahei",
                     "simsun",
                     "simsun-extb",
                 ]);
-                self.map_script(Latin, &["times new roman"]);
-                self.map_script(Arabic, &["tahoma", "segoe ui"]);
-                self.map_script(Armenian, &["segoe ui", "sylfaen"]);
-                self.map_script(Bengali, &["nirmala ui", "vrinda"]);
-                self.map_script(Brahmi, &["segoe ui historic"]);
-                self.map_script(Braille, &["segoe ui symbol"]);
-                self.map_script(Buginese, &["leelawadee ui"]);
-                self.map_script(CanadianAboriginal, &["gadugi", "euphemia"]);
-                self.map_script(Carian, &["segoe ui historic"]);
-                self.map_script(Devanagari, &["nirmala ui", "mangal"]);
-                self.map_script(Hebrew, &["david", "segoe ui", "calibri"]);
-                self.map_script(Hangul, &["malgun gothic", "gulim"]);
-                self.map_script(Myanmar, &["myanmar text"]);
-                self.map_script(Malayalam, &["nirmala ui", "kartika"]);
-                self.map_script(Han, &["microsoft yahei", "simsun", "simsun-extb"]);
+
+                self.map_script(Script::Latin, &["times new roman"]);
+                self.map_script(Script::Arabic, &["tahoma", "segoe ui"]);
+                self.map_script(Script::Armenian, &["segoe ui", "sylfaen"]);
+                self.map_script(Script::Bengali, &["nirmala ui", "vrinda"]);
+                self.map_script(Script::Brahmi, &["segoe ui historic"]);
+                self.map_script(Script::Braille, &["segoe ui symbol"]);
+                self.map_script(Script::Buginese, &["leelawadee ui"]);
+                self.map_script(Script::CanadianAboriginal, &["gadugi", "euphemia"]);
+                self.map_script(Script::Carian, &["segoe ui historic"]);
+                self.map_script(Script::Devanagari, &["nirmala ui", "mangal"]);
+                self.map_script(Script::Hebrew, &["david", "segoe ui", "calibri"]);
+                self.map_script(Script::Hangul, &["malgun gothic", "gulim"]);
+                self.map_script(Script::Myanmar, &["myanmar text"]);
+                self.map_script(Script::Malayalam, &["nirmala ui", "kartika"]);
+                self.map_script(Script::Han, &["microsoft yahei", "simsun", "simsun-extb"]);
                 self.map_script(
-                    Hiragana,
+                    Script::Hiragana,
                     &["meiryo", "yu gothic", "ms pgothic", "microsoft yahei"],
                 );
                 self.map_script(
-                    Katakana,
+                    Script::Katakana,
                     &["meiryo", "yu gothic", "ms pgothic", "microsoft yahei"],
                 );
-                self.map_script(Kharoshthi, &["segoe ui historic"]);
+                self.map_script(Script::Kharoshthi, &["segoe ui historic"]);
                 self.map_script(
-                    Khmer,
+                    Script::Khmer,
                     &[
                         "leelawadee ui",
                         "khmer ui",
@@ -112,7 +111,7 @@ impl StaticIndex {
                     ],
                 );
                 self.map_script(
-                    Lao,
+                    Script::Lao,
                     &[
                         "leelawadee ui",
                         "lao ui",
@@ -122,34 +121,35 @@ impl StaticIndex {
                         "code2000",
                     ],
                 );
-                self.map_script(Lisu, &["segoe ui"]);
+                self.map_script(Script::Lisu, &["segoe ui"]);
                 self.map_script(
-                    Syriac,
+                    Script::Syriac,
                     &["estrangelo edessa", "estrangelo nisibin", "code2000"],
                 );
-                self.map_script(Thai, &["tahoma", "leelawadee ui", "leelawadee"]);
+                self.map_script(Script::Thai, &["tahoma", "leelawadee ui", "leelawadee"]);
                 self.map_script(
-                    Tibetan,
+                    Script::Tibetan,
                     &["microsoft himalaya", "jomolhari", "tibetan machine uni"],
                 );
-                self.map_script(Vai, &["ebrima"]);
-                self.map_script(Yi, &["microsoft yi baiti", "nuosu sil", "code2000"]);
+                self.map_script(Script::Vai, &["ebrima"]);
+                self.map_script(Script::Yi, &["microsoft yi baiti", "nuosu sil", "code2000"]);
             }
             Os::MacOs => {
                 // Simplified Chinese
-                self.cjk[Simplified as usize] = self.find_fallbacks(&["pingfang sc"]);
+                self.cjk[Cjk::Simplified as usize] = self.find_fallbacks(&["pingfang sc"]);
                 // Traditional Chinese
-                self.cjk[Traditional as usize] = self.find_fallbacks(&["pingfang tc"]);
-                self.cjk[Cjk::None as usize] = self.cjk[Traditional as usize];
+                self.cjk[Cjk::Traditional as usize] = self.find_fallbacks(&["pingfang tc"]);
+                self.cjk[Cjk::None as usize] = self.cjk[Cjk::Traditional as usize];
                 // Japanese
-                self.cjk[Japanese as usize] =
+                self.cjk[Cjk::Japanese as usize] =
                     self.find_fallbacks(&["hiragino kaku gothic pron w3"]);
                 // Korean
-                self.cjk[Korean as usize] = self.find_fallbacks(&["apple sd gothic neo"]);
-                self.map_script(Latin, &["times", "times new roman"]);
-                self.map_script(Arabic, &["geeza pro"]);
+                self.cjk[Cjk::Korean as usize] = self.find_fallbacks(&["apple sd gothic neo"]);
+
+                self.map_script(Script::Latin, &["times", "times new roman"]);
+                self.map_script(Script::Arabic, &["geeza pro"]);
                 self.map_script(
-                    Devanagari,
+                    Script::Devanagari,
                     &[
                         "itf devanagari",
                         "kohinoor devanagari",
@@ -157,14 +157,14 @@ impl StaticIndex {
                         "devanagari mt",
                     ],
                 );
-                self.map_script(Bengali, &[]);
-                self.map_script(Myanmar, &["noto sans myanmar", "myanmar mn"]);
-                self.map_script(Malayalam, &["malayalam mn"]);
-                self.map_script(Hebrew, &["lucida grande", "arial hebrew"]);
+                self.map_script(Script::Bengali, &[]);
+                self.map_script(Script::Myanmar, &["noto sans myanmar", "myanmar mn"]);
+                self.map_script(Script::Malayalam, &["malayalam mn"]);
+                self.map_script(Script::Hebrew, &["lucida grande", "arial hebrew"]);
             }
             _ => {
                 self.map_script(
-                    Latin,
+                    Script::Latin,
                     &[
                         "liberation sans",
                         "dejavu sans",
@@ -172,15 +172,24 @@ impl StaticIndex {
                         "source sans pro",
                     ],
                 );
-                self.map_script(Arabic, &["noto sans arabic"]);
-                self.map_script(Hebrew, &["noto sans hebrew", "noto serif hebrew"]);
-                self.map_script(Bengali, &["noto sans bengali", "noto serif bengali"]);
+                self.map_script(Script::Arabic, &["noto sans arabic"]);
+                self.map_script(Script::Hebrew, &["noto sans hebrew", "noto serif hebrew"]);
                 self.map_script(
-                    Devanagari,
+                    Script::Bengali,
+                    &["noto sans bengali", "noto serif bengali"],
+                );
+                self.map_script(
+                    Script::Devanagari,
                     &["noto sans devanagari", "noto serif devanagari"],
                 );
-                self.map_script(Malayalam, &["noto sans malayalam", "noto serif malayalam"]);
-                self.map_script(Myanmar, &["noto sans myanmar", "noto serif myanmar"]);
+                self.map_script(
+                    Script::Malayalam,
+                    &["noto sans malayalam", "noto serif malayalam"],
+                );
+                self.map_script(
+                    Script::Myanmar,
+                    &["noto sans myanmar", "noto serif myanmar"],
+                );
             }
         }
     }
