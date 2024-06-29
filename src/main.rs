@@ -13,7 +13,8 @@ use glutin::prelude::{GlConfig, GlDisplay, NotCurrentGlContextSurfaceAccessor};
 use glutin::surface::{GlSurface, SurfaceAttributesBuilder};
 use glutin_winit::ApiPrefence;
 use raw_window_handle::HasRawWindowHandle;
-use winit::event::{Event, ModifiersState, WindowEvent};
+use winit::dpi::LogicalPosition;
+use winit::event::{Event, Ime, ModifiersState, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::WindowBuilder;
 
@@ -120,6 +121,7 @@ fn main() {
     let mut align = Alignment::Start;
     let mut always_update = false;
 
+    window.set_ime_allowed(true);
     window.set_cursor_icon(winit::window::CursorIcon::Text);
 
     // let quad = gfx::FullscreenQuad::new();
@@ -176,8 +178,11 @@ fn main() {
                             clicks = 1;
                         }
                         click_time = now;
+                        
                         let x = mx - margin;
                         let y = my - margin;
+                        window.set_ime_position(LogicalPosition::new(x, y));
+
                         selection = if clicks == 2 {
                             extend_to = ExtendTo::Word;
                             Selection::word_from_point(&layout, x, y)
@@ -205,9 +210,9 @@ fn main() {
                     }
                     if !selection.is_collapsed() {
                         if let Some(erase) = selection.erase(&layout) {
-                            if let Some(offset) = doc.erase(erase) {
-                                inserted = Some(offset);
-                                if let Some(offs) = doc.insert(offset, ch) {
+                            if let Some(place) = doc.erase(erase) {
+                                inserted = Some(place);
+                                if let Some(offs) = doc.insert(place, ch) {
                                     inserted = Some(offs);
                                 }
                                 needs_update = true;
@@ -216,6 +221,25 @@ fn main() {
                     } else {
                         let place = selection.offset(&layout);
                         if let Some(offs) = doc.insert(place, ch) {
+                            inserted = Some(offs);
+                        }
+                        needs_update = true;
+                    }
+                }
+                WindowEvent::Ime(Ime::Commit(ime_commit)) => {
+                    if !selection.is_collapsed() {
+                        if let Some(erase) = selection.erase(&layout) {
+                            if let Some(place) = doc.erase(erase) {
+                                inserted = Some(place);
+                                if let Some(offs) = doc.insert_str(place, &ime_commit) {
+                                    inserted = Some(offs);
+                                }
+                                needs_update = true;
+                            }
+                        }
+                    } else {
+                        let place = selection.offset(&layout);
+                        if let Some(offs) = doc.insert_str(place, &ime_commit) {
                             inserted = Some(offs);
                         }
                         needs_update = true;
