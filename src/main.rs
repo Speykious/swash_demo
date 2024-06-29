@@ -631,7 +631,7 @@ fn build_document() -> doc::Document {
     db.leave_span();
     db.enter_span(&[
         S::family_list("Roboto, sand-serif"),
-        S::Size(6.),
+        S::Size(8.),
         S::LineSpacing(1.),
     ]);
     db.add_text(LOREM_IPSUM);
