@@ -18,7 +18,14 @@ swash_and_textedit.png screenshot in the repo root.
 
 This currently requires OpenGL 4.1.
 
+> Note about this fork: I modified a few things here and there, I notably tweaked font
+> fallback on Linux and MacOS to get better results for CJK characters, added some
+> paragraphs for a better demo, and implemented basic IME events to test input methods.
+
+![Demo (MacOS)](/demo.png)
+
 # Usage
+
 ```
 cargo run --release
 ```
