@@ -142,9 +142,12 @@ impl StaticIndex {
                 self.cjk[Cjk::None as usize] = self.cjk[Cjk::Traditional as usize];
                 // Japanese
                 self.cjk[Cjk::Japanese as usize] =
-                    self.find_fallbacks(&["hiragino kaku gothic pron w3"]);
+                    self.find_fallbacks(&["hiragino sans w3", "noto sans cjk jp"]);
                 // Korean
                 self.cjk[Cjk::Korean as usize] = self.find_fallbacks(&["apple sd gothic neo"]);
+
+                self.map_script(Script::Hiragana, &["hiragino sans w3", "noto sans cjk jp"]);
+                self.map_script(Script::Katakana, &["hiragino sans w3", "noto sans cjk jp"]);
 
                 self.map_script(Script::Latin, &["times", "times new roman"]);
                 self.map_script(Script::Arabic, &["geeza pro"]);
