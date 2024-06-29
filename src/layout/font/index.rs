@@ -163,6 +163,23 @@ impl StaticIndex {
                 self.map_script(Script::Hebrew, &["lucida grande", "arial hebrew"]);
             }
             _ => {
+                // Simplified Chinese
+                self.cjk[Cjk::Simplified as usize] =
+                    self.find_fallbacks(&["noto sans cjk sc", "noto serif cjk sc"]);
+                // Traditional Chinese
+                self.cjk[Cjk::Traditional as usize] =
+                    self.find_fallbacks(&["noto sans cjk tc", "noto serif cjk tc"]);
+                self.cjk[Cjk::None as usize] = self.cjk[Cjk::Traditional as usize];
+                // Japanese
+                self.cjk[Cjk::Japanese as usize] =
+                    self.find_fallbacks(&["noto sans cjk jp", "noto serif cjk jp"]);
+                // Korean
+                self.cjk[Cjk::Korean as usize] =
+                    self.find_fallbacks(&["noto sans cjk kr", "noto serif cjk kr"]);
+
+                self.map_script(Script::Hiragana, &["noto sans cjk jp"]);
+                self.map_script(Script::Katakana, &["noto sans cjk jp"]);
+
                 self.map_script(
                     Script::Latin,
                     &[

@@ -627,7 +627,7 @@ fn build_document() -> doc::Document {
     db.leave_span();
     db.add_text(WIKI_TYPOGRAPHY_REST);
     db.enter_span(&[S::LineSpacing(1.)]);
-    db.add_text(" Furthermore, العربية نص جميل. द क्विक ब्राउन फ़ॉक्स jumps over the lazy 🐕.\n\n");
+    db.add_text(" Furthermore, العربية نص جميل. द क्विक ब्राउन फ़ॉक्स jumps over the lazy 🐕.\nそう、怠惰な犬の上にジャンプするのだ！\n\n");
     db.leave_span();
     db.enter_span(&[
         S::family_list("Roboto, sand-serif"),
