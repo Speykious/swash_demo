@@ -249,12 +249,11 @@ impl BidiResolver {
                         is_isolate,
                     );
                 } else {
+                    //
                     if is_isolate {
                         overflow_isolates += 1;
-                    } else {
-                        if overflow_isolates == 0 {
-                            overflow_embedding += 1;
-                        }
+                    } else if overflow_isolates == 0 {
+                        overflow_embedding += 1;
                     }
                 }
             } else if t == PDI {
@@ -656,7 +655,6 @@ where
 {
     let mut max_level = 0;
     let mut lowest_odd_level = 255;
-    let mut idx = 0;
     let len = order.len();
     for i in 0..len {
         let level = levels(i);
@@ -666,8 +664,7 @@ where
         if level & 1 != 0 && level < lowest_odd_level {
             lowest_odd_level = level;
         }
-        order[idx] = idx;
-        idx += 1;
+        order[i] = i;
     }
     for level in (lowest_odd_level..=max_level).rev() {
         let mut i = 0;
@@ -680,9 +677,7 @@ where
                 let mut j = i;
                 let mut k = end - 1;
                 while j < k {
-                    let tmp = order[j];
-                    order[j] = order[k];
-                    order[k] = tmp;
+                    order.swap(j, k);
                     j += 1;
                     k -= 1;
                 }

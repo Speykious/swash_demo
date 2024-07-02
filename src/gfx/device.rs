@@ -44,7 +44,7 @@ impl Device {
                 height,
                 data,
             } => {
-                if let Some(tex) = self.textures.get(&id) {
+                if let Some(tex) = self.textures.get(id) {
                     tex.update(data);
                 }
             }
@@ -104,7 +104,7 @@ impl Device {
                     }
                 },
                 Command::BindTexture(unit, id) => {
-                    if let Some(tex) = self.textures.get(&id) {
+                    if let Some(tex) = self.textures.get(id) {
                         tex.bind(*unit);
                     }
                 }

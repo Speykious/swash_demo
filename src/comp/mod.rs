@@ -154,6 +154,7 @@ impl Compositor {
                         );
                     }
                     if underline {
+                        //
                         if entry.top - underline_offset < entry.height as i32 {
                             if let Some(mut desc_ink) = entry.desc.range() {
                                 desc_ink.0 += gx;
@@ -175,7 +176,7 @@ impl Compositor {
             for range in self.intercepts.iter() {
                 if ux < range.0 {
                     self.batches.add_rect(
-                        &Rect::new(ux, uy, range.0 - ux, underline_size as f32),
+                        &Rect::new(ux, uy, range.0 - ux, underline_size),
                         depth,
                         underline_color,
                     );

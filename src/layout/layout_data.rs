@@ -85,6 +85,7 @@ impl ClusterData {
         } else if self.is_empty() {
             0.
         } else {
+            //
             if let Some(glyph) = glyphs.get(self.glyphs as usize) {
                 if glyph.is_simple() {
                     glyph.simple_data().1

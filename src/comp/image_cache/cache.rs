@@ -16,7 +16,7 @@ pub struct ImageCache {
 impl ImageCache {
     /// Creates a new image cache.
     pub fn new(max_texture_size: u16) -> Self {
-        let max_texture_size = max_texture_size.min(4096).max(1024);
+        let max_texture_size = max_texture_size.clamp(1024, 4096);
         Self {
             entries: Vec::new(),
             atlases: Vec::new(),
@@ -61,15 +61,11 @@ impl ImageCache {
         }
         let mut atlas_data = self.alloc_from_atlases(format, width, height);
         if atlas_data.is_none() {
-            if epoch.0 > 1 {
-                if self.evict_from_atlases(epoch.0 - 1) > 0 {
-                    atlas_data = self.alloc_from_atlases(format, width, height);
-                }
+            if epoch.0 > 1 && self.evict_from_atlases(epoch.0 - 1) > 0 {
+                atlas_data = self.alloc_from_atlases(format, width, height);
             }
-            if atlas_data.is_none() && epoch.0 > 0 {
-                if self.evict_from_atlases(epoch.0) > 0 {
-                    atlas_data = self.alloc_from_atlases(format, width, height);
-                }
+            if atlas_data.is_none() && epoch.0 > 0 && self.evict_from_atlases(epoch.0) > 0 {
+                atlas_data = self.alloc_from_atlases(format, width, height);
             }
         }
         if atlas_data.is_none() {

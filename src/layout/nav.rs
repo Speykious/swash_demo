@@ -370,6 +370,7 @@ impl Selection {
         } else if anchor.line > focus.line || anchor.edge > focus.edge {
             // Otherwise, set it to 'after' state.
             if !anchor.after {
+                //
                 if anchor.cluster > 0 {
                     anchor = Node::from_visual_cluster(layout, anchor.cluster - 1, true);
                 }
@@ -411,6 +412,7 @@ impl Selection {
         } else if anchor.line > focus.line || anchor.edge > focus.edge {
             // Otherwise, set it to 'after' state.
             if !anchor.after {
+                //
                 if anchor.cluster > 0 {
                     anchor = Node::from_visual_cluster(layout, anchor.cluster - 1, true);
                 }
@@ -446,6 +448,7 @@ impl Selection {
         } else if anchor.line > focus.line || anchor.edge > focus.edge {
             // Otherwise, set it to 'after' state.
             if !anchor.after {
+                //
                 if anchor.cluster > 0 {
                     anchor = Node::from_visual_cluster(layout, anchor.cluster - 1, true);
                 }
@@ -466,6 +469,7 @@ impl Selection {
                 &self.anchor
             }
         } else {
+            //
             if self.focus > self.anchor {
                 &self.focus
             } else {
@@ -647,7 +651,7 @@ impl Node {
                 return Some(2);
             }
         }
-        return None;
+        None
     }
 
     // fn previous_text_location(&self, layout: &Paragraph) -> (FragmentId, usize) {
@@ -717,10 +721,8 @@ impl Node {
             if !self.after {
                 index += 1;
             }
-        } else {
-            if self.after {
-                index += 1;
-            }
+        } else if self.after {
+            index += 1;
         }
         index
     }

@@ -174,7 +174,7 @@ impl Color {
     /// Creates a new color from a CSS style color definition.
     pub fn parse(s: &str) -> Option<Self> {
         let s = s.trim();
-        if s.starts_with("#") {
+        if s.starts_with('#') {
             let s = &s.as_bytes()[1..];
             let mut bytes = [0u8, 0, 0, 255];
             match s.len() {
@@ -247,7 +247,7 @@ impl Color {
     }
 
     /// Converts the byte color into a floating point representation.
-    pub fn to_rgba_f32(&self) -> [f32; 4] {
+    pub fn to_rgba_f32(self) -> [f32; 4] {
         let s = 1. / 255.;
         [
             self.r as f32 * s,

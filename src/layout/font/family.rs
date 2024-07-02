@@ -26,7 +26,7 @@ impl FamilyList {
 
     /// Returns an iterator over the font families represented
     /// by the names.
-    pub fn families<'a>(&'a self) -> impl Iterator<Item = FamilyKey<'a>> + Clone + 'a {
+    pub fn families(&self) -> impl Iterator<Item = FamilyKey<'_>> + Clone + '_ {
         parse_families(self.names())
     }
 
@@ -58,7 +58,7 @@ impl From<&str> for FamilyList {
     }
 }
 
-pub fn parse_families<'a>(families: &'a str) -> impl Iterator<Item = FamilyKey<'a>> + Clone {
+pub fn parse_families(families: &str) -> impl Iterator<Item = FamilyKey<'_>> + Clone {
     FamilyParser {
         source: families.as_bytes(),
         cur: 0,

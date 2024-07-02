@@ -77,7 +77,7 @@ impl AtlasAllocator {
         match slot {
             FreeSlot::Direct(x) => {
                 line.state = (x as u32 + padded_width as u32).min(self.width as u32);
-                return Some((x, y));
+                Some((x, y))
             }
             FreeSlot::Node(prev_index, slot_index) => {
                 let slot = self.slots.get_mut(slot_index as usize)?;
@@ -91,18 +91,16 @@ impl AtlasAllocator {
                     let slot = *slot;
                     if let Some(prev) = prev_index {
                         self.slots[prev as usize].next = slot.next;
+                    } else if slot.next == !0 {
+                        // We're filling the last slot with no previous
+                        // slot. Revert to the offset state.
+                        self.lines[line_index].state = slot_end;
                     } else {
-                        if slot.next == !0 {
-                            // We're filling the last slot with no previous
-                            // slot. Revert to the offset state.
-                            self.lines[line_index].state = slot_end;
-                        } else {
-                            self.lines[line_index].state = FRAGMENTED_BIT | slot.next;
-                        }
+                        self.lines[line_index].state = FRAGMENTED_BIT | slot.next;
                     }
                     self.free_slot(slot_index);
                 }
-                return Some((x, y));
+                Some((x, y))
             }
         }
     }
@@ -297,7 +295,7 @@ impl AtlasAllocator {
                     print!(" ({}..={})", slot.x, slot.x + slot.width);
                     itr = slot.next;
                 }
-                println!("");
+                println!();
             }
         }
     }

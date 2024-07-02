@@ -13,7 +13,7 @@ use swash::FontRef;
 
 const IS_MACOS: bool = cfg!(target_os = "macos");
 
-const SOURCES: &'static [Source] = &[
+const SOURCES: &[Source] = &[
     Source::ColorBitmap(StrikeWith::BestFit),
     Source::ColorOutline(0),
     //Source::Bitmap(Strike::ExactSize),
@@ -92,16 +92,19 @@ fn get_entry<'a>(
     coords: &[i16],
 ) -> &'a mut FontEntry {
     let key = (id, Coords::Ref(coords));
+
     if let Some(entry) = fonts.get_mut(&key) {
         // Remove this unsafe when Rust learns that early returns should not
         // hold a borrow until the end of the function, or HashMap gets an
         // entry API that accepts borrowed keys (in which case, the double
         // lookup here can be removed altogether)
-        return unsafe { core::mem::transmute(entry) };
+        return unsafe { core::mem::transmute::<&mut FontEntry, &mut FontEntry>(entry) };
     }
+
     let key = FontKey {
         key: (id, Coords::new(coords)),
     };
+
     fonts.entry(key).or_default()
 }
 
@@ -158,7 +161,7 @@ impl<'a> GlyphCacheSession<'a> {
                 height: h,
                 image,
                 is_bitmap: self.scaled_image.content == Content::Color,
-                desc: DescenderRegion::new(&self.scaled_image),
+                desc: DescenderRegion::new(self.scaled_image),
             };
             self.entry.glyphs.insert(key, entry);
             return Some(entry);
@@ -201,7 +204,7 @@ impl Coords<'static> {
             Self::None
         } else if len <= 8 {
             let mut arr = [0i16; 8];
-            (&mut arr[..len]).copy_from_slice(coords);
+            arr[..len].copy_from_slice(coords);
             Self::Inline(len as u8, arr)
         } else {
             Self::Heap(coords.into())
@@ -214,7 +217,7 @@ impl<'a> Coords<'a> {
         match self {
             Self::None => &[],
             Self::Inline(len, arr) => &arr[..*len as usize],
-            Self::Heap(vec) => &vec,
+            Self::Heap(vec) => vec,
             Self::Ref(slice) => slice,
         }
     }

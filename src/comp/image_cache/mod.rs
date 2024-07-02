@@ -120,8 +120,8 @@ impl<'a> ImageData<'a> {
         Some(match self {
             Self::None => return None,
             Self::Borrowed(data) => *data,
-            Self::Owned(data) => &data,
-            Self::Shared(data) => &*data,
+            Self::Owned(data) => data,
+            Self::Shared(data) => data,
         })
     }
 }

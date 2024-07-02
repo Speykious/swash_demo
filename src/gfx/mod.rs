@@ -45,7 +45,7 @@ impl Buffer {
     }
 
     pub fn update<T: Copy>(&mut self, data: &[T]) {
-        let size = data.len() * core::mem::size_of::<T>();
+        let size = std::mem::size_of_val(data);
         if size > isize::MAX as usize {
             return;
         }
@@ -67,7 +67,7 @@ impl Buffer {
     }
 
     pub fn update_slice<T: Copy>(&mut self, offset: usize, data: &[T]) {
-        let size = data.len() * core::mem::size_of::<T>();
+        let size = std::mem::size_of_val(data);
         let ty = self.kind.to_gl();
         if let Some(end) = offset.checked_add(size) {
             if end <= self.capacity && end < isize::MAX as usize {

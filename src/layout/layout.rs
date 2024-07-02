@@ -23,7 +23,7 @@ impl Paragraph {
 
     /// Clears the current line state and returns a line breaker
     /// for the paragraph.
-    pub fn break_lines<'a>(&'a mut self) -> BreakLines<'a> {
+    pub fn break_lines(&mut self) -> BreakLines<'_> {
         self.line_data.clear();
         BreakLines::new(&mut self.data, &mut self.line_data)
     }
@@ -45,13 +45,13 @@ impl Paragraph {
 }
 
 impl Paragraph {
-    pub(super) fn push_run<'a>(
+    pub(super) fn push_run(
         &mut self,
         spans: &[SpanData],
         font: Font,
         size: f32,
         level: u8,
-        shaper: Shaper<'a>,
+        shaper: Shaper<'_>,
     ) {
         let coords_start = self.data.coords.len() as u32;
         self.data
@@ -65,10 +65,9 @@ impl Paragraph {
         let mut span_data = &spans[last_span as usize];
         shaper.shape_with(|c| {
             if c.info.boundary() == Boundary::Mandatory {
-                self.data
-                    .clusters
-                    .last_mut()
-                    .map(|c| c.flags |= CLUSTER_NEWLINE);
+                if let Some(c) = self.data.clusters.last_mut() {
+                    c.flags |= CLUSTER_NEWLINE;
+                }
             }
             let span = c.data;
             if span != last_span {
@@ -158,10 +157,9 @@ impl Paragraph {
                         glyphs: component_advance.to_bits(),
                     });
                 }
-                self.data
-                    .clusters
-                    .last_mut()
-                    .map(|c| c.flags |= CLUSTER_LAST_CONTINUATION);
+                if let Some(c) = self.data.clusters.last_mut() {
+                    c.flags |= CLUSTER_LAST_CONTINUATION;
+                }
             }
         });
         let clusters_end = self.data.clusters.len() as u32;
@@ -218,7 +216,7 @@ impl Paragraph {
     }
 
     pub(super) fn apply_spacing(&mut self, spans: &[SpanData]) {
-        if spans.len() == 0 {
+        if spans.is_empty() {
             return;
         }
         for run in &mut self.data.runs {
@@ -242,17 +240,17 @@ impl Paragraph {
                         } else if cluster.is_last_continuation() {
                             cluster.glyphs = (f32::from_bits(cluster.glyphs) + spacing).to_bits();
                         }
-                        cluster
+                        if let Some(g) = cluster
                             .glyphs_mut(&self.data.detailed_clusters, &mut self.data.glyphs)
                             .last_mut()
-                            .map(|g| {
-                                if g.is_simple() {
-                                    g.add_spacing(spacing);
-                                } else {
-                                    detailed_glyphs[g.detail_index()].advance += spacing;
-                                }
-                                run.advance += spacing;
-                            });
+                        {
+                            if g.is_simple() {
+                                g.add_spacing(spacing);
+                            } else {
+                                detailed_glyphs[g.detail_index()].advance += spacing;
+                            }
+                            run.advance += spacing;
+                        }
                     }
                 }
             }

@@ -200,7 +200,7 @@ fn main() {
                     }
                 }
                 WindowEvent::ReceivedCharacter(ch) => {
-                    // println!("got char {:?} [{}]", ch, ch as u32);
+                    println!("got char {:?} [{}]", ch, ch as u32);
                     match ch as u32 {
                         8 | 13 | 127 => return,
                         _ => {}
@@ -227,7 +227,9 @@ fn main() {
                     }
                 }
                 WindowEvent::Ime(Ime::Commit(ime_commit)) => {
+                    println!("ime commit");
                     if !selection.is_collapsed() {
+                        println!("ime: {}", &ime_commit);
                         if let Some(erase) = selection.erase(&layout) {
                             if let Some(place) = doc.erase(erase) {
                                 inserted = Some(place);
@@ -238,9 +240,13 @@ fn main() {
                             }
                         }
                     } else {
+                        println!("ime: {}", &ime_commit);
+
                         let place = selection.offset(&layout);
-                        if let Some(offs) = doc.insert_str(place, &ime_commit) {
-                            inserted = Some(offs);
+                        dbg!(place);
+                        if let Some(offset) = doc.insert_str(place, &ime_commit) {
+                            dbg!(offset);
+                            inserted = Some(offset);
                         }
                         needs_update = true;
                     }
@@ -328,6 +334,7 @@ fn main() {
                             }
                             X => {
                                 if ctrl || cmd {
+                                    //
                                     if !selection.is_collapsed() {
                                         let text =
                                             doc.get_selection(selection.normalized_range(&layout));
@@ -460,6 +467,7 @@ fn main() {
                         cursor_on = false;
                     }
                 } else {
+                    //
                     if cursor_time > 0.5 {
                         cursor_time = 0.;
                         cursor_on = true;
@@ -672,7 +680,7 @@ fn build_document() -> doc::Document {
     db.build()
 }
 
-const WIKI_TYPOGRAPHY_REST: &'static str = " when displayed. The arrangement of type involves selecting typefaces, point sizes, line lengths, line-spacing (leading), and letter-spacing (tracking), and adjusting the space between pairs of letters (kerning). The term typography is also applied to the style, arrangement, and appearance of the letters, numbers, and symbols created by the process.";
+const WIKI_TYPOGRAPHY_REST: &str = " when displayed. The arrangement of type involves selecting typefaces, point sizes, line lengths, line-spacing (leading), and letter-spacing (tracking), and adjusting the space between pairs of letters (kerning). The term typography is also applied to the style, arrangement, and appearance of the letters, numbers, and symbols created by the process.";
 
 const LOREM_IPSUM: &str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Enim tortor at auctor urna nunc id. Ornare aenean euismod elementum nisi. Aliquam id diam maecenas ultricies mi eget mauris pharetra et. Purus sit amet volutpat consequat mauris nunc congue. Urna molestie at elementum eu facilisis sed. Habitant morbi tristique senectus et. Erat pellentesque adipiscing commodo elit. Placerat duis ultricies lacus sed turpis tincidunt id aliquet. Pharetra pharetra massa massa ultricies mi quis hendrerit dolor magna. Sit amet consectetur adipiscing elit. Nibh mauris cursus mattis molestie. Nec feugiat in fermentum posuere. Volutpat blandit aliquam etiam erat. Aliquet nibh praesent tristique magna sit amet purus gravida. Cras tincidunt lobortis feugiat vivamus at augue eget arcu. Non sodales neque sodales ut etiam. In hac habitasse platea dictumst vestibulum. Cras fermentum odio eu feugiat pretium nibh ipsum.
 

@@ -305,17 +305,16 @@ impl<'a> BreakLines<'a> {
             //     }
             // }
             for run in self.lines.runs[make_range(line.runs)].iter() {
-                let r = Run::new(self.layout, &run);
+                let r = Run::new(self.layout, run);
                 let rtl = run.level & 1 != 0;
                 let mut clusters = r.visual_clusters();
-                let mut pos = 0;
-                while let Some(cluster) = clusters.next() {
+                for (pos, cluster) in (0u32..).zip(clusters) {
                     let index = if rtl {
                         run.clusters.1.wrapping_sub(pos).wrapping_sub(1)
                     } else {
                         run.clusters.0 + pos
                     };
-                    pos += 1;
+
                     self.lines.clusters.push((index, total_advance));
                     total_advance += cluster.advance();
                 }
@@ -433,13 +432,17 @@ fn commit_line(
     if runs_start == runs_end {
         return false;
     }
-    let mut line = LineData::default();
-    line.runs = (runs_start, runs_end);
-    line.clusters = state.clusters;
-    line.width = state.x;
-    line.max_advance = max_advance;
-    line.alignment = alignment;
-    line.explicit_break = explicit;
+
+    let line = LineData {
+        runs: (runs_start, runs_end),
+        clusters: state.clusters,
+        width: state.x,
+        max_advance,
+        alignment,
+        explicit_break: explicit,
+        ..Default::default()
+    };
+
     lines.lines.push(line);
     state.clusters.0 = state.clusters.1;
     state.clusters.1 += 1;

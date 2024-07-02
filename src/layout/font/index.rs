@@ -357,7 +357,7 @@ impl StaticIndex {
     }
 
     /// Returns a font family entry for the specified identifier.
-    pub fn family_by_id<'a>(&'a self, id: FamilyId) -> Option<FamilyEntry<'a>> {
+    pub fn family_by_id(&self, id: FamilyId) -> Option<FamilyEntry<'_>> {
         let data = self.families.get(id.to_usize())?;
         Some(FamilyEntry {
             index: &self.base,
@@ -366,7 +366,7 @@ impl StaticIndex {
     }
 
     /// Returns a font entry for the specified identifier.
-    pub fn font_by_id<'a>(&'a self, id: FontId) -> Option<FontEntry<'a>> {
+    pub fn font_by_id(&self, id: FontId) -> Option<FontEntry<'_>> {
         let data = self.base.fonts.get(id.to_usize())?;
         let family = self.families.get(data.family.to_usize())?;
         Some(FontEntry {
